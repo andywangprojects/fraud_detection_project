@@ -6,32 +6,107 @@
 </head>
 <body>
   <h1>📊 Fraud Detection Data Analysis</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fraud Detection EDA Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      color: #1a73e8;
+    }
+    h2 {
+      margin-top: 40px;
+      color: #2c3e50;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+    h3 {
+      margin-top: 25px;
+      color: #444;
+    }
+    a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    img {
+      display: block;
+      margin: 10px auto 30px;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    p {
+      max-width: 800px;
+      margin: 0 auto 15px;
+      text-align: justify;
+    }
+    hr {
+      margin: 40px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      font-style: italic;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
 
-  <p><a href="fraud_eda_report.html" target="_blank">📄 View Full EDA Report</a></p>
+  <h1>📊 Fraud Detection Data Analysis</h1>
+
+  <!-- 📦 数据来源 -->
+  <h2>📦 Data Resource</h2>
+  <p>
+    Original dataset from
+    <a href="https://www.kaggle.com/kartik2112/fraud-detection" target="_blank">
+      Kaggle: Credit Card Fraud Detection
+    </a>
+  </p>
+
+  <!-- 📄 EDA 报告链接 -->
+  <h2>📄 Interative EDA Report</h2>
+  <p>
+    Access the full exploratory data analysis report here:
+    <a href="fraud_eda_report.html" target="_blank">📄 View Full EDA Report (HTML)</a>
+  </p>
+
+  <!-- 📈 数据可视化部分 -->
+  <h2>📈 Data Visualization Display</h2>
+
+  <h3>1️⃣ Fraud Volume per Transaction Category</h3>
+  <img src="fraud_by_category_(1).png" width="700" alt="Fraud Count by Category">
+  <p class="insight">🔍 Fraudulent activity is most concentrated in “grocery_pos” and “gas_transport” categories.</p>
+
+  <h3>2️⃣ 	Top 10 Cities by Fraud Rate (%)</h3>
+  <img src="fraud_by_top10_cities.png" width="700" alt="Fraud Rate in Top Cities">
+  <p class="insight">🔍 The fraud rates of these 10 cities are relatively close to each other, among which Birmingham has the highest fraud rate.</p>
   
-<h2>📊 Data Visualization Display</h2>
+  <h3>3️⃣ 	Distribution of Fraud Amounts vs Normal Distribution</h3>
+  <img src="normal_distribution_of_fraud.png" width="700" alt="Fraud Transaction Amount Distribution">
+  <p>
+    This chart compares the distribution of transaction amounts for fraudulent transactions (blue histogram) with a fitted normal distribution (red dashed line). It helps assess how well fraud transaction amounts follow a normal distribution and reveals patterns or anomalies such as skewness or irregular peaks.
+  </p>
 
-<h3>Fraud Count by Category</h3>
-<img src="fraud_by_category (1).png" width="700">
+  <!-- 👤 作者 -->
+  <div class="footer">
+    Created by Andy Wang · Published with GitHub Pages
+  </div>
 
-<h3>Fraud Rate in Top 10 cities</h3>
-<img src="fraud_by_top10_cities.png" width="700">
-
-<h3>💳 Transaction Amount Distribution for Fraudulent Cases</h3>
-<img src="normal_distribution_of_fraud.png" width="700">
-<p>
-  This chart compares the distribution of transaction amounts for fraudulent transactions (blue histogram) with a fitted normal distribution (red dashed line).
-</p>
-<p>
-  It helps assess how well fraud transaction amounts follow a normal distribution and reveals patterns or anomalies such as skewness or irregular peaks.
-</p>
-  <hr>
-
-  <h3>📦 Data Source</h3>
-  <p>Original dataset from <a href="https://www.kaggle.com/kartik2112/fraud-detection" target="_blank">
-    Kaggle: Credit Card Fraud Detection</a></p>
-
-  <p><i>Created by Your Name · Powered by GitHub Pages</i></p>
 </body>
 </html>
+
 
