@@ -102,6 +102,88 @@
 <h3>5️⃣Fraud vs Non-Fraud by Age Interval</h3>
 <img src="Fraud vs Non-Fraud by Age Interval (1).png" width="700" alt="Fraud vs Non-Fraud by Age Interval">
   <p class="insight">🔍Age‐interval comparison indicates fraud frequency increases with age, peaking in the 58–95 age group.
+    
+<!-- Data Cleaning -->
+<section id="data-cleaning">
+  <h2>📦 Data Cleaning</h2>
+  <ol>
+    <li>Removed redundant variables and retained only <code>category</code>, <code>amt</code>, <code>gender</code>, <code>job</code>, <code>is_fraud</code>, and <code>age_at_transaction</code> for testing.</li>
+    <li>
+      <strong>Categorical Variables encoding</strong>
+      <ul>
+        <li>Considering that <code>category</code> has a relatively small number of subdivisions, I encoded it by mapping each sub-category to a specific integer.</li>
+        <li>For <code>job</code>, I initially considered using <code>LabelEncoder</code>, but its integer encoding implies an ordinal relationship among categories, which is not appropriate for this feature. Therefore, I applied frequency encoding instead.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>Numerical Variables encoding</strong>
+      <ul>
+        <li>Scaled <code>amt</code> and <code>age_at_transaction</code> using <code>StandardScaler</code>.</li>
+      </ul>
+    </li>
+  </ol>
+</section>
+
+<hr>
+
+<!-- Model Building & Testing -->
+<section id="model-building">
+  <h2>🤖 Model Building & Testing</h2>
+
+  <div id="logistic-regression">
+    <h3>1️⃣ Logistic Regression</h3>
+
+    <ol>
+      <li>Used all remaining variables to train the model, but the classification report performance was unsatisfactory. 
+          <img src="log_reg_class_rep1.jpg" width="700" alt="Fraud Transaction Amount Distribution"></li>
+      <li>Assessed feature importance by examining the magnitudes of the model’s coefficients.</li>
+      <li>Tried optimizing the model by combining Precision–Recall curve threshold selection with over- and under-sampling. 
+         <img src="log_reg_class_rep2.jpg" width="700" alt="Fraud Transaction Amount Distribution"></li>
+    </ol>
+
+    <h4>📊 Evaluating the Model: Confusion Matrix, ROC & AUC, and PR Curve</h4>
+
+    <p><strong>Reading Materials:</strong></p>
+    <ul>
+      <li><a href="https://builtin.com/data-science/roc-curves-auc" target="_blank">ROC Curves & AUC</a></li>
+      <li><a href="https://builtin.com/data-science/precision-and-recall" target="_blank">Precision and Recall</a></li>
+    </ul>
+
+    <h5>What Is an ROC Curve and AUC?</h5>
+    <p>An ROC curve (receiver operating characteristic curve) measures a classifier’s performance by plotting the true positive rate against the false positive rate at various thresholds. AUC (area under the ROC curve) represents the probability that the classifier will rank a randomly chosen positive instance higher than a randomly chosen negative one.</p>
+
+    <h5>Why Choose the ROC Curve?</h5>
+    <p>AUC is <strong>threshold-invariant</strong> (the metric’s value does not depend on a particular decision threshold) and <strong>scale-invariant</strong> (the metric evaluates ranking quality rather than absolute score values).</p>
+
+    <h5>Trade-off Between TPR and FPR</h5>
+    <p>If your goal is to identify as many true positives as possible, you pursue a high TPR, which may come at the cost of a higher FPR—meaning false positives become more frequent. And vice versa.</p>
+
+    <h5>Personal Insights</h5>
+    <ul>
+      <li><strong>TPR</strong> indicates the proportion of actual positives that the model correctly predicts as positive. <strong>FPR</strong> indicates the proportion of actual negatives that the model incorrectly predicts as positive.</li>
+      <li><strong>Precision</strong>: Of all samples predicted positive (TP + FP), what fraction are truly positive (TP).</li>
+      <li><strong>Recall</strong>: Of all actual positive samples (TP + FN), what fraction did the model correctly predict as positive (TP).</li>
+    </ul>
+
+    <h4>🔑 Curves and Interpretation</h4>
+
+    <h5>Confusion Matrix</h5>
+    <!-- insert Confusion Matrix image here -->
+
+    <h5>ROC Curve</h5>
+    <!-- insert ROC Curve image here -->
+    <p><strong>Key takeaway:</strong> An AUC of 0.84 means that in 84% of random fraud–non-fraud pairs, the fraud transaction gets a higher score. This indicates good general discrimination, but it doesn’t tell you how many false alarms you’ll get at a working threshold.</p>
+
+    <h5>PR Curve</h5>
+    <!-- insert Precision–Recall Curve image here -->
+    <p><strong>Key takeaway:</strong> An Average Precision of 0.19 means that—even though you can rank frauds relatively well—the model’s practical precision is low: when it flags a transaction as fraud, it’s correct only 19% of the time on average.</p>
+
+    <h4>📝 Conclusion</h4>
+    <p>Although the model achieves strong overall discriminative power (ROC-AUC = 0.84), precision on the minority class remains low (AP = 0.19), so logistic regression is not an effective tool to predict credit card fraud.</p>
+  </div>
+</section>
+
+
 
   
   <!-- 👤 作者 -->
