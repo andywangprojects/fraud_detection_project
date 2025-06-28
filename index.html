@@ -135,16 +135,15 @@
 
     <ol>
       <li>Used all remaining variables to train the model, but the classification report performance was unsatisfactory. 
-          <img src="log_reg_class_rep1.jpg" width="700" alt="Fraud Transaction Amount Distribution"></li>
+          <img src="log_reg_class_rep1.jpg" width="700" ></li>
       <li>Assessed feature importance by examining the magnitudes of the model’s coefficients.</li>
       <li>Tried optimizing the model by combining Precision–Recall curve threshold selection with over- and under-sampling. 
-         <img src="log_reg_class_rep2.jpg" width="700" alt="Fraud Transaction Amount Distribution"></li>
+         <img src="log_reg_class_rep2.jpg" width="700" ></li>
     </ol>
 
-    <h4>📊 Evaluating the Model: Confusion Matrix, ROC & AUC, and PR Curve</h4>
+    <h2>📊 Evaluating the Model: Confusion Matrix, ROC & AUC, and PR Curve</h2>
 
     <p><strong>Reading Materials:</strong></p>
-    <ul>
       <li><a href="https://builtin.com/data-science/roc-curves-auc" target="_blank">ROC Curves & AUC</a></li>
       <li><a href="https://builtin.com/data-science/precision-and-recall" target="_blank">Precision and Recall</a></li>
     </ul>
@@ -165,20 +164,23 @@
       <li><strong>Recall</strong>: Of all actual positive samples (TP + FN), what fraction did the model correctly predict as positive (TP).</li>
     </ul>
 
-    <h4>🔑 Curves and Interpretation</h4>
+    
+    <h2>🔑 Curves and Interpretation</h2>
 
     <h5>Confusion Matrix</h5>
-    <!-- insert Confusion Matrix image here -->
+<img src="confusion_metrix.jpg" width="700" ></li>
 
     <h5>ROC Curve</h5>
-    <!-- insert ROC Curve image here -->
+  <img src="ROC Curve.jpg" width="700" ></li>
     <p><strong>Key takeaway:</strong> An AUC of 0.84 means that in 84% of random fraud–non-fraud pairs, the fraud transaction gets a higher score. This indicates good general discrimination, but it doesn’t tell you how many false alarms you’ll get at a working threshold.</p>
 
     <h5>PR Curve</h5>
-    <!-- insert Precision–Recall Curve image here -->
+ <img src="PR Curve.jpg" width="700" ></li>
     <p><strong>Key takeaway:</strong> An Average Precision of 0.19 means that—even though you can rank frauds relatively well—the model’s practical precision is low: when it flags a transaction as fraud, it’s correct only 19% of the time on average.</p>
 
-    <h4>📝 Conclusion</h4>
+
+    
+    <h2>📝 Conclusion</h2>
     <p>Although the model achieves strong overall discriminative power (ROC-AUC = 0.84), precision on the minority class remains low (AP = 0.19), so logistic regression is not an effective tool to predict credit card fraud.</p>
   </div>
 </section>
