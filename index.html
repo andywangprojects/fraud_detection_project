@@ -141,7 +141,7 @@
          <img src="log_reg_class_rep2.jpg" width="700" ></li>
     </ol>
 
-    <h2>📊 Evaluating the Model: Confusion Matrix, ROC & AUC, and PR Curve</h2>
+    <h3>📊 Key Takeaways</h3>
 
     </h5>Reading Materials:</strong><h5>
       <li><a href="https://builtin.com/data-science/roc-curves-auc" target="_blank">ROC Curves & AUC</a></li>
@@ -165,7 +165,7 @@
     </ul>
 
     
-    <h2>🔑 Curves and Interpretation</h2>
+    <h3>🔑 Evaluating the Logistic Regression Model: Confusion Matrix, ROC & AUC, and PR Curve</h3>
 
     <h5>Confusion Matrix</h5>
 <img src="confusion_metric.jpg" width="700" ></li>
@@ -180,10 +180,62 @@
 
 
     
-    <h2>📝 Conclusion</h2>
+    <h3>📝 Comment</h3>
     <p>Although the model achieves strong overall discriminative power (ROC-AUC = 0.84), precision on the minority class remains low (AP = 0.19), so logistic regression is not an effective tool to predict credit card fraud.</p>
   </div>
 </section>
+  
+  <!-- Random Forest -->
+<div id="random-forest">
+  <h3>2️⃣ Random Forest</h3>
+    <ol>
+      <li>Using the Random Forest with only class_weight='balanced', the model achieved a precision of 0.84 and a recall of 0.69. This configuration prioritized reducing false negatives, only correctly flagging 69% of fraudulent transactions while maintaining a high level of precision.</li>
+          <img src="rf_class_rep1.jpg" width="700" ></li>
+      <li>Next, I applied both SMOTE (oversampling the minority class at a 0.5 ratio) and random undersampling of the majority class. While this boosted recall to 0.87—meaning the vast majority of fraud cases were detected—it came at the cost of precision dropping to 0.41. In practical terms, many non-fraudulent transactions were now being misclassified as fraud.</li>
+                <img src="rf_class_rep2.jpg" width="700" ></li>
+      <li>n Finally, I followed GPT’s suggestion to remove undersampling and reduce the SMOTE ratio from 0.5 to 0.1. I then used the Precision–Recall curve to identify the optimal decision threshold for maximizing the F1 score. With this tuned setup, the model struck a better balance, yielding a precision of 0.766 and a recall of 0.723.
+         <img src="rf_class_rep3.jpg" width="700" ></li>
+    </ol>
+  
+    <h3>📊 Evaluating the Random forest Model: ROC & AUC and PR Curve,</h3>
+  
+      <h5>PR Curve</h5>
+  <img src="PR_Cuver_rf.png" width="350" alt="RF Confusion Matrix">
+   <p><strong>Key takeaway:</strong> At very low recall , we can get near-perfect precision, but beyond ~0.7 recall precision dips below 0.8. The red dot marks the threshold (≈0.73) that maximizes F₁, giving us about precision ≈ 0.77 and recall ≈ 0.73. Thus, we can strike a balance—catch roughly 73% of frauds while still being right about 77% of the time.</p>
+           
+     <h5>ROC Curve</h5>
+  <img src="ROC_Cuvrve_rf.png" width="350" alt="RF ROC & AUC">
+    <p><strong>Key takeaway:</strong>The ROC curve shoots almost straight up to a true positive rate (TPR) near 1.0 by the time false positive rate (FPR) is only ~0.1, and the area under curve is 0.99. That indicates nearly perfect rank-ordering of fraud vs. non-fraud by the model.</p>
+
+    
+    </li>
+    <h3>📊 Feature Importance</h3>
+      <div>
+        <h5>1️⃣ Gini-based Importance</h5>
+        <img src="feature_importance_rf.png" width="350" alt="RF Gini Importance">
+        
+        <h5>2️⃣ Permutation-based Importance</h5>
+        <img src="permutation_importance_rf.png" width="350" alt="RF Permutation Importance">
+        
+    <p><strong>Note:</strong>:Both the Gini‐based and permutation‐based importance rankings confirm that transaction amount and category are by far the most influential predictors in Random Forest Model, with the other three features contributing only marginally. The Gini scores (≈0.72 vs. 0.20) somewhat overstate the gap between amt and category_Code, whereas permutation importance (≈3.4 % vs. 3.2 % accuracy drop) reveals they’re nearly equally critical to model performance. In practice, this means the fraud detector model I built relies almost entirely on those two variables—so to improve robustness and capture subtler fraud patterns.</p>
+    </li>
+  </ol>
+
+
+  <h3>📊 SHAP Analysis ( Fraud Data) </h3>
+  <div>
+    <img src="SHAP_waterfall1_rf.png" width="700" alt="SHAP Waterfall 1">
+  </div>
+    <img src="SHAP_waterfall2_rf.png" width="700" alt="SHAP Waterfall 2">
+  </div>
+    <p class="insight">🔍 [Interpretation of Waterfall Plot]</p> In each case, the transaction amount (amt) is the single biggest push (+0.52/ +0.53), followed by the category_Code=2 (+0.45/ +0.46). The age_scaled and job_freq features add only a sliver (+0.01 or less), while gender_le slightly suppresses the score. In short, Random Forest flags these two transactions as fraud almost entirely on the basis of an unusually large amount and a high‐risk category—other features barely move the needle.
+  
+      <h3>📝 Comment</h3>
+  <p> Random Forest achieves near‐perfect discriminative power (ROC-AUC = 0.99), its performance on the minority fraud class (precision = 0.766, recall = 0.723) is relatively high enough to detect credit card fraud compared to logistic model.
+    
+  </p>
+</div>
+
 
 
 
