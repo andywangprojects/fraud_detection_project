@@ -169,14 +169,14 @@
     
     <h3>🔑 Evaluating the Logistic Regression Model: Confusion Matrix, ROC & AUC, and PR Curve</h3>
 
-    <h5>Confusion Matrix</h5>
+    <h4>Confusion Matrix</h4>
 <img src="confusion_metric.jpg" width="700" ></li>
 
-    <h5>ROC Curve</h5>
+    <h4>ROC Curve</h4>
   <img src="ROC Curve.png" width="700" ></li>
     <p><strong>Key takeaway:</strong> An AUC of 0.84 means that in 84% of random fraud–non-fraud pairs, the fraud transaction gets a higher score. This indicates good general discrimination, but it doesn’t tell you how many false alarms you’ll get at a working threshold.</p>
 
-    <h5>PR Curve</h5>
+    <h4>PR Curve</h4>
  <img src="PR Curve.png" width="700" ></li>
     <p><strong>Key takeaway:</strong> An Average Precision of 0.19 means that—even though you can rank frauds relatively well—the model’s practical precision is low: when it flags a transaction as fraud, it’s correct only 19% of the time on average.</p>
 
@@ -231,7 +231,7 @@
   </div>
     <img src="SHAP_waterfall2_rf.png" width="700" alt="SHAP Waterfall 2">
   </div>
-    <p><strong> class="insight">🔍 Interpretation of Waterfall Plot:</strong> In each case, the transaction amount (amt) is the single biggest push (+0.52/ +0.53), followed by the category_Code=2 (+0.45/ +0.46). The age_scaled and job_freq features add only a sliver (+0.01 or less), while gender_le slightly suppresses the score. In short, Random Forest flags these two transactions as fraud almost entirely on the basis of an unusually large amount and a high‐risk category—other features barely move the needle.
+    <p><strong> <class="insight">🔍 Interpretation of Waterfall Plot:</strong> In each case, the transaction amount (amt) is the single biggest push (+0.52/ +0.53), followed by the category_Code=2 (+0.45/ +0.46). The age_scaled and job_freq features add only a sliver (+0.01 or less), while gender_le slightly suppresses the score. In short, Random Forest flags these two transactions as fraud almost entirely on the basis of an unusually large amount and a high‐risk category—other features barely move the needle.
   
       <h3>📝 Comment</h3>
   <p> Random Forest achieves near‐perfect discriminative power (ROC-AUC = 0.99), its performance on the minority fraud class (precision = 0.766, recall = 0.723) is relatively high enough to detect credit card fraud compared to logistic model.
