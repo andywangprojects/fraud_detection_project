@@ -143,6 +143,56 @@
          <img src="log_reg_class_rep2.jpg" width="700" ></li>
     </ol>
 </p>
+    <section id="coef-ci">
+  <h3>Confidence Interval of Coefficients</h3>
+
+  <h4>Baseline Fraud Risk (~1.8 %)</h4>
+  <p>
+    This is the model’s “starting point” probability of fraud when all input factors
+    (amount, category, gender, job frequency, age) are at their reference level
+    (i.e. zero on your scaled/encoded scale). Converting the intercept (–3.99) into a
+    probability gives about <strong>1.8 %</strong>, meaning that without any other information,
+    the model would guess just under a 2 % chance of fraud.
+  </p>
+
+  <h4>Confidence Intervals (CIs)</h4>
+  <p>
+    A 95 % confidence interval is a range around each coefficient that shows how precise
+    that estimate is. If the range doesn’t cross zero, we’re reasonably sure (95 % confident)
+    that the real effect isn’t just random noise. In my results, all intervals stayed
+    either entirely above or entirely below zero, so each factor has a real impact on fraud risk.
+  </p>
+
+  <h4>Key Feature Effects</h4>
+  <ul>
+    <li>
+      <strong>Transaction Amount (amt):</strong>
+      Higher amounts increase fraud risk. Every one-unit jump in your scaled amount
+      raises the odds of fraud by about <strong>58 %</strong>.
+    </li>
+    <li>
+      <strong>Merchant Category (category_Code):</strong>
+      Some categories are slightly safer. Moving up one code reduces fraud odds by
+      about <strong>15 %</strong>.
+    </li>
+    <li>
+      <strong>Gender (gender_le):</strong>
+      Depending on how you coded it, going from 0→1 increases fraud odds by roughly
+      <strong>23 %</strong>.
+    </li>
+    <li>
+      <strong>Job Frequency (job_freq):</strong>
+      This feature nearly guarantees non-fraud in your data—higher values push fraud
+      probability toward zero.
+    </li>
+    <li>
+      <strong>Age (age_scaled):</strong>
+      Older customers have a slightly higher fraud risk, with each unit of scaled age
+      adding about <strong>16 %</strong> to the odds.
+    </li>
+  </ul>
+</section>
+
     <h3>📊 Key Takeaways</h3>
 
     </h4>Reading Materials:</strong><h4>
