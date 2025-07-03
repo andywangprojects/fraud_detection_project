@@ -224,8 +224,11 @@
 
     <h4>ROC Curve</h4>
   <img src="ROC Curve.png" width="700" ></li>
-    <p><strong>Key takeaway:</strong> An AUC of 0.84 means that in 84% of random fraud–non-fraud pairs, the fraud transaction gets a higher score. This indicates good general discrimination, but it doesn’t tell you how many false alarms you’ll get at a working threshold.</p>
-
+    <p><strong>Key takeaway:</strong><ul>
+  <li>The curve is moderately close to the top-left corner.</li>
+  <li>This suggests the model is pretty good at distinguishing fraud, but there’s room for improvement.</li>
+  <li>True Positive Rate (TPR) starts high but flattens early, indicating some trade-off with increasing False Positive Rate (FPR).</li>
+</ul>
     <h4>PR Curve</h4>
  <img src="PR Curve.png" width="700" ></li>
     <p><strong>Key takeaway:</strong> An Average Precision of 0.19 means that—even though you can rank frauds relatively well—the model’s practical precision is low: when it flags a transaction as fraud, it’s correct only 19% of the time on average.</p>
@@ -252,23 +255,27 @@
     <h3>📊 Evaluating the Random forest Model: ROC & AUC and PR Curve,</h3>
   
       <h4>PR Curve</h4>
-  <img src="PR_Cuver_rf.png" width="350" alt="RF Confusion Matrix">
+  <img src="PR_Cuver_rf.png" width="700" alt="RF Confusion Matrix">
    <p><strong>Key takeaway:</strong> At very low recall , we can get near-perfect precision, but beyond ~0.7 recall precision dips below 0.8. The red dot marks the threshold (≈0.73) that maximizes F₁, giving us about precision ≈ 0.77 and recall ≈ 0.73. Thus, we can strike a balance—catch roughly 73% of frauds while still being right about 77% of the time.</p>
            
      <h4>ROC Curve</h4>
-  <img src="ROC_Curve_rf.png" width="350" alt="RF ROC & AUC">
-    <p><strong>Key takeaway:</strong>The ROC curve shoots almost straight up to a true positive rate (TPR) near 1.0 by the time false positive rate (FPR) is only ~0.1, and the area under curve is 0.99. That indicates nearly perfect rank-ordering of fraud vs. non-fraud by the model.</p>
-
+  <img src="ROC_Curve_rf.png" width="700" alt="RF ROC & AUC">
+    <p><strong>Key takeaway:</strong>
+  <ul>
+  <li>The curve almost hugs the top-left corner, which is ideal.</li>
+  <li>This model can almost perfectly rank fraud vs. non-fraud.</li>
+  <li>Near-perfect AUC means high detection with very low false alarms.</li>
+</ul>
 
   </p>
     </li>
     <h3>📊 Feature Importance</h3>
       <div>
         <h4>1️⃣ Gini-based Importance</h4>
-        <img src="feature_importance_rf.png" width="350" alt="RF Gini Importance">
+        <img src="feature_importance_rf.png" width="700" alt="RF Gini Importance">
         
         <h4>2️⃣ Permutation-based Importance</h4>
-        <img src="permutation_importance_rf.png" width="350" alt="RF Permutation Importance">
+        <img src="permutation_importance_rf.png" width="700" alt="RF Permutation Importance">
         
     <p><strong>Note:</strong>Both the Gini‐based and permutation‐based importance rankings confirm that transaction amount and category are by far the most influential predictors in Random Forest Model, with the other three features contributing only marginally. The Gini scores  somewhat overstate the gap between amt and category_Code, whereas permutation importance reveals they’re nearly equally critical to model performance. In practice, this means the fraud detector model I built relies almost entirely on those two variables. </p>
     </li>
