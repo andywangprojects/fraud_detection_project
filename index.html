@@ -259,7 +259,7 @@
            
      <h4>ROC Curve</h4>
   <img src="ROC_Curve_rf.png" width="700" alt="RF ROC & AUC">
-    <p><strong>Key takeaway:The curve almost hugs the top-left corner, which is ideal.This model can almost perfectly rank fraud vs. non-fraud.Near-perfect AUC means high detection with very low false alarms.</p>
+    <p><strong>Key takeaway:</strong> The curve almost hugs the top-left corner, which is ideal.This model can almost perfectly rank fraud vs. non-fraud.Near-perfect AUC means high detection with very low false alarms.</p>
 
 
   </p>
@@ -272,7 +272,7 @@
         <h4>2️⃣ Permutation-based Importance</h4>
         <img src="permutation_importance_rf.png" width="700" alt="RF Permutation Importance">
         
-    <p><strong>Note:</strong>Both the Gini‐based and permutation‐based importance rankings confirm that transaction amount and category are by far the most influential predictors in Random Forest Model, with the other three features contributing only marginally. The Gini scores  somewhat overstate the gap between amt and category_Code, whereas permutation importance reveals they’re nearly equally critical to model performance. In practice, this means the fraud detector model I built relies almost entirely on those two variables. </p>
+    <p><strong>Note:</strong> Both the Gini‐based and permutation‐based importance rankings confirm that transaction amount and category are by far the most influential predictors in Random Forest Model, with the other three features contributing only marginally. The Gini scores  somewhat overstate the gap between amt and category_Code, whereas permutation importance reveals they’re nearly equally critical to model performance. In practice, this means the fraud detector model I built relies almost entirely on those two variables. </p>
     </li>
   </ol>
 
@@ -283,7 +283,7 @@
   </div>
     <img src="SHAP_waterfall2_rf.png" width="700" alt="SHAP Waterfall 2">
   </div>
-    <p><strong> <class="insight">🔍 Interpretation of Waterfall Plot:</strong> In each case, the transaction amount (amt) is the single biggest push (+0.52/ +0.53), followed by the category_Code=2 (+0.45/ +0.46). The age_scaled and job_freq features add only a sliver (+0.01 or less), while gender_le slightly suppresses the score. In short, Random Forest flags these two transactions as fraud almost entirely on the basis of an unusually large amount and a high‐risk category—other features barely move the needle.
+    <p><strong> <class="insight">🔍 Interpretation of Waterfall Plot:</strong> In each case, the transaction amount (amt) is the single biggest push (+0.52/ +0.53), followed by the category_Code=2 (+0.45/ +0.46). The age_scaled and job_freq features add only a sliver (+0.01 or less), while gender_le slightly suppresses the score. In short, Random Forest flags these two transactions as fraud almost entirely on the basis of an unusually large amount and a high‐risk category—other features barely move the needle.</p>
   
       <h3>📝 Comment</h3>
   <p> Random Forest achieves near‐perfect discriminative power (ROC-AUC = 0.99), its performance on the minority fraud class (precision = 0.766, recall = 0.723) is relatively high enough to detect credit card fraud compared to logistic model.
