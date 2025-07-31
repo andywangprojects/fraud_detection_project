@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Fraud Detection EDA Report</title>
+  <title>Credit Card Transactions Fraud Detection Report</title>
 </head>
 <body>
   <h1>📊 Fraud Detection Data Analysis</h1>
@@ -103,9 +103,9 @@
 <img src="Fraud vs Non-Fraud by Age Interval (1).png" width="700" alt="Fraud vs Non-Fraud by Age Interval">
   <p class="insight">🔍Age‐interval comparison indicates fraud frequency increases with age, peaking in the 58–95 age group.
     
-<!-- Data Cleaning -->
+<!-- Data Preprocessing -->
 <section id="data-cleaning">
-  <h2>📦 Data Cleaning</h2>
+  <h2>📦 Data Preprocessing</h2>
   <ol>
     <li>Removed redundant variables and retained only <code>category</code>, <code>amt</code>, <code>gender</code>, <code>job</code>, <code>is_fraud</code>, and <code>age_at_transaction</code> for testing.</li>
     <li>
@@ -150,7 +150,7 @@
   <p>
     This is the model’s “starting point” probability of fraud when all input factors
     (amount, category, gender, job frequency, age) are at their reference level
-    (i.e. zero on your scaled/encoded scale). Converting the intercept (–3.99) into a
+    (i.e. zero on the scaled/encoded scale). Converting the intercept (–3.99) into a
     probability gives about <strong>1.8 %</strong>, meaning that without any other information,
     the model would guess just under a 2 % chance of fraud.
   </p>
