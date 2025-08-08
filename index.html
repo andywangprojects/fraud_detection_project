@@ -81,6 +81,27 @@
   <a href="test_eda_report.html" target="_blank">📄 View Full EDA Report for Test Data (HTML)</a>
 </p>
 
+ <h2>📊 Class Imbalance Analysis </h2>
+
+<p><p>
+<p>The training dataset contains a total of <strong>1,844,974</strong> credit card transaction records labeled as <code>is_fraud</code>, indicating whether a transaction is fraudulent (1) or not (0).</p>
+
+<p>The distribution is as follows:</p>
+<ul>
+  <li><strong>Non-Fraudulent transactions (label 0):</strong> 1,835,624 (<strong>99.4941%</strong>)</li>
+  <li><strong>Fraudulent transactions (label 1):</strong> 9,350 (<strong>0.5059%</strong>)</li>
+</ul>
+
+<h3>🧾 Why tackling imbalanced data is important?</h3>
+<p>
+For a classification model, especially in domains such as fraud detection, medical diagnostics, and spam filtering, rare but high-impact cases are often the primary concern. However, if imbalanced data is not properly addressed during training, the model may appear to perform well—achieving high overall accuracy—while completely failing to detect the minority class. This results in misleading evaluation metrics and significantly reduces the model’s practical value.
+
+In such datasets, the minority class often behaves like an outlier due to its sparse distribution in the feature space. Many models interpret these rare patterns as statistical noise or unrepresentative signals, leading them to ignore or underfit the minority class. Since most algorithms are optimized to minimize overall error, they are inherently biased toward the majority class.
+
+Consequently, imbalanced data can cause the model to overfit the dominant class while neglecting the minority class, which, ironically, is typically the class of greatest importance. Addressing this imbalance is therefore critical to building models that are not only statistically sound but also effective in real-world decision-making.
+</p>
+ 
+
   <!-- 📈 数据可视化部分 -->
   <h2>📈 Data Visualization Display</h2>
 
