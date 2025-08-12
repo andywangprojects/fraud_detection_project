@@ -152,115 +152,102 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
   <h2>🤖 Model Building & Testing</h2>
 
   <div id="logistic-regression">
-    <h3>1️⃣ Logistic Regression</h3>
+    <h3>📊 Logistic Regression Model Evaluation Report</h2>
 
-    <ol>
-      <li>Used all remaining variables to train the model, but the classification report performance was unsatisfactory. 
-          <img src="log_reg_class_rep1.jpg" width="700" ></li>
-      </p>
-      <li>Assessed feature importance by examining the magnitudes of the model’s coefficients.</li>
-      </p>
-      <li>Tried optimizing the model by combining Precision–Recall curve threshold selection with over- and under-sampling. 
-         <img src="log_reg_class_rep2.jpg" width="700" ></li>
-    </ol>
-</p>
-    <section id="coef-ci">
-  <h3>Confidence Interval of Coefficients</h3>
+<h3>📌 Overview</h3>
+<ul>
+  <li><strong>Model:</strong> Logistic Regression</li>
+  <li><strong>Preprocessing:</strong> StandardScaler (for <code>amt</code> & <code>age_scaled</code>)</li>
+  <li><strong>Resampling:</strong> SMOTE (10%) + RandomUnderSampler (balanced)<br>
+    <em>I use a low SMOTE ratio of 10% to avoid over-generating synthetic fraud samples. Fraud data is often heterogeneous, and high SMOTE ratios (e.g., 0.5) can create unrealistic combinations of dissimilar fraud cases. This synthetic noise may confuse the model and hurt test recall. A smaller ratio helps the model focus on core fraud patterns, reduces overfitting, and preserves the natural class imbalance—which reflects real-world fraud clustering.</em>
+  </li>
+  <li><strong>Evaluation Focus:</strong> F<sub>2</sub> score (recall-focused)<br>
+    <em>In credit card fraud detection, the cost of missing a fraudulent transaction (false negative) is typically much higher than flagging a legitimate one (false positive). Therefore, I use the F<sub>2</sub> score to prioritize recall over precision during model evaluation.</em>
+  </li>
+</ul>
 
-  <h4>Baseline Fraud Risk (~1.8 %)</h4>
-  <p>
-    This is the model’s “starting point” probability of fraud when all input factors
-    (amount, category, gender, job frequency, age) are at their reference level
-    (i.e. zero on the scaled/encoded scale). Converting the intercept (–3.99) into a
-    probability gives about <strong>1.8 %</strong>, meaning that without any other information,
-    the model would guess just under a 2 % chance of fraud.
-  </p>
+<h3>🔍 Threshold Optimization</h3>
+<ul>
+  <li><strong>Best threshold for F<sub>2</sub>:</strong> 0.9758</li>
+  <li><strong>Maximum F<sub>2</sub> score:</strong> 0.4091</li>
+</ul>
 
-  <h4>Confidence Intervals (CIs)</h4>
-  <p>
-    A 95 % confidence interval is a range around each coefficient that shows how precise
-    that estimate is. If the range doesn’t cross zero, we’re reasonably sure (95 % confident)
-    that the real effect isn’t just random noise. In my results, all intervals stayed
-    either entirely above or entirely below zero, so each factor has a real impact on fraud risk.
-  </p>
+<h3>📈 Performance Metrics</h3>
+  <h3>📉 Precision-Recall Curve</h3>
+<img src="PR_Curve_lr.png" alt="Precision-Recall Curve">
+   <li><strong>PR AUC:</strong> 0.1401</li> 
 
-  <h4>Key Feature Effects</h4>
-  <ul>
-    <li>
-      <strong>Transaction Amount (amt):</strong>
-      Higher amounts increase fraud risk. Every one-unit jump in your scaled amount
-      raises the odds of fraud by about <strong>58 %</strong>.
-    </li>
-    <li>
-      <strong>Merchant Category (category_Code):</strong>
-      Some categories are slightly safer. Moving up one code reduces fraud odds by
-      about <strong>15 %</strong>.
-    </li>
-    <li>
-      <strong>Gender (gender_le):</strong>
-      Depending on how you coded it, going from 0→1 increases fraud odds by roughly
-      <strong>23 %</strong>.
-    </li>
-    <li>
-      <strong>Job Frequency (job_freq):</strong>
-      This feature nearly guarantees non-fraud in your data—higher values push fraud
-      probability toward zero.
-    </li>
-    <li>
-      <strong>Age (age_scaled):</strong>
-      Older customers have a slightly higher fraud risk, with each unit of scaled age
-      adding about <strong>16 %</strong> to the odds.
-    </li>
-  </ul>
-</section>
+<h3>📉 ROC Curve</h3>
+<img src="ROC_Curve_lr.png" alt="ROC Curve">
+  <li><strong>ROC AUC:</strong> 0.8341</li>
+</ul>
 
-    <h3>📊 Key Takeaways</h3>
+<h3>📋 Classification Report (at F<sub>2</sub>-optimized threshold)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Class</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F2-Score</th>
+      <th>Support</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Non-Fraud (0)</td>
+      <td>0.998</td>
+      <td>0.996</td>
+      <td>0.997</td>
+      <td>553,574</td>
+    </tr>
+    <tr>
+      <td>Fraud (1)</td>
+      <td>0.287</td>
+      <td>0.458</td>
+      <td>0.353</td>
+      <td>2,145</td>
+    </tr>
+  </tbody>
+</table>
 
-    </h4>Reading Materials:</strong><h4>
-      <li><a href="https://builtin.com/data-science/roc-curves-auc" target="_blank">ROC Curves & AUC</a></li>
-      <li><a href="https://builtin.com/data-science/precision-and-recall" target="_blank">Precision and Recall</a></li>
-    </ul>
-
-    <h4>What Is an ROC Curve and AUC?</h4>
-    <p>An ROC curve (receiver operating characteristic curve) measures a classifier’s performance by plotting the true positive rate against the false positive rate at various thresholds. AUC (area under the ROC curve) represents the probability that the classifier will rank a randomly chosen positive instance higher than a randomly chosen negative one.</p>
-
-    <h4>Why Choose the ROC Curve?</h4>
-    <p>AUC is <strong>threshold-invariant</strong> (the metric’s value does not depend on a particular decision threshold) and <strong>scale-invariant</strong> (the metric evaluates ranking quality rather than absolute score values).</p>
-
-    <h4>Trade-off Between TPR and FPR</h4>
-    <p>If your goal is to identify as many true positives as possible, you pursue a high TPR, which may come at the cost of a higher FPR—meaning false positives become more frequent. And vice versa.</p>
-
-    <h4>Personal Insights</h4>
-    <ul>
-      <li><strong>TPR</strong> indicates the proportion of actual positives that the model correctly predicts as positive. <strong>FPR</strong> indicates the proportion of actual negatives that the model incorrectly predicts as positive.</li>
-      <li><strong>Precision</strong>: Of all samples predicted positive (TP + FP), what fraction are truly positive (TP).</li>
-      <li><strong>Recall</strong>: Of all actual positive samples (TP + FN), what fraction did the model correctly predict as positive (TP).</li>
-    </ul>
-
-    
-    <h3>🔑 Evaluating the Logistic Regression Model: Confusion Matrix, ROC & AUC, and PR Curve</h3>
-
-    <h4>Confusion Matrix</h4>
-<img src="confusion_metric.jpg" width="700" ></li>
-
-    <h4>ROC Curve</h4>
-  <img src="ROC Curve.png" width="700" ></li>
-<div style="margin-left: 20px;">
-  <p><strong>Key takeaway:The curve is moderately close to the top-left corner.This suggests the model is pretty good at distinguishing fraud, but there’s room for improvement.True Positive Rate (TPR) starts high but flattens early, indicating some trade-off with increasing False Positive Rate (FPR).</p>
+<h3>🧮 Confusion Matrix</h3>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Predicted: 0</th>
+      <th>Predicted: 1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actual: 0</td>
+      <td>TN = 551,132</td>
+      <td>FP = 2,442</td>
+    </tr>
+    <tr>
+      <td>Actual: 1</td>
+      <td>FN = 1,163</td>
+      <td>TP = 982</td>
+    </tr>
+  </tbody>
+</table>
 
 
-    <h4>PR Curve</h4>
- <img src="PR Curve.png" width="700" ></li>
-    <p><strong>Key takeaway:</strong> An Average Precision of 0.19 means that—even though you can rank frauds relatively well—the model’s practical precision is low: when it flags a transaction as fraud, it’s correct only 19% of the time on average.</p>
+<h3>📊 Summary</h3>
+<ul>
+  <li>The model achieves very high overall accuracy (99.4%), but this is expected due to the extreme class imbalance.</li>
+  <li>ROC AUC of <strong>0.8341</strong> indicates the model can generally distinguish between fraud and non-fraud transactions.</li>
+  <li>PR AUC of <strong>0.1401</strong> is modest, reflecting the challenge of maintaining high precision and recall in rare-event detection.</li>
+  <li>At the optimized F<sub>2</sub> threshold, the model achieves a recall of <strong>45.8%</strong> for fraud cases, but with only <strong>28.7%</strong> precision.</li>
+  <li>This setting may be acceptable when catching more frauds is prioritized, even at the cost of more false alerts.</li>
+  <li>Nonetheless, the low precision means this model should not be used alone in production without additional filtering or validation mechanisms.</li>
+</ul>
 
-
-    </p>
-    <h3>📝 Comment</h3>
-    <p>Although the model achieves strong overall discriminative power (ROC-AUC = 0.84), precision on the minority class remains low (AP = 0.19), so logistic regression is not an effective tool to predict credit card fraud.</p>
-  </div>
-</section>
-  </p>
-  <!-- Random Forest -->
+<p><strong>Conclusion:</strong> The logistic regression model shows promising recall performance in identifying fraudulent activity but suffers from low precision. It may be suitable for recall-sensitive scenarios or as a component in a larger fraud detection pipeline.</p>
+  
+    <!-- Random Forest -->
 <div id="random-forest">
   <h3>2️⃣ Random Forest</h3>
     <ol>
