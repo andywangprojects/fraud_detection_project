@@ -147,17 +147,13 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
 
 <hr>
 
-<!-- Model Building & Testing -->
-<section id="model-building">
-  <h2>🤖 Model Building & Testing</h2>
 
   <div id="logistic-regression">
-    <h3>📊 Logistic Regression Model Evaluation Report</h2>
+    <h2>📊 Logistic Regression Model Evaluation Report</h2>
 
 <h3>📌 Overview</h3>
 <ul>
   <li><strong>Model:</strong> Logistic Regression</li>
-  <li><strong>Preprocessing:</strong> StandardScaler (for <code>amt</code> & <code>age_scaled</code>)</li>
   <li><strong>Resampling:</strong> SMOTE (10%) + RandomUnderSampler (balanced)<br>
     <em>I use a low SMOTE ratio of 10% to avoid over-generating synthetic fraud samples. Fraud data is often heterogeneous, and high SMOTE ratios (e.g., 0.5) can create unrealistic combinations of dissimilar fraud cases. This synthetic noise may confuse the model and hurt test recall. A smaller ratio helps the model focus on core fraud patterns, reduces overfitting, and preserves the natural class imbalance—which reflects real-world fraud clustering.</em>
   </li>
@@ -175,11 +171,10 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
 <h3>📈 Performance Metrics</h3>
   <h3>📉 Precision-Recall Curve</h3>
 <img src="PR_Curve_lr.png" alt="Precision-Recall Curve">
-   <li><strong>PR AUC:</strong> 0.1401</li> 
+
 
 <h3>📉 ROC Curve</h3>
 <img src="ROC_Curve_lr.png" alt="ROC Curve">
-  <li><strong>ROC AUC:</strong> 0.8341</li>
 </ul>
 
 <h3>📋 Classification Report (at F<sub>2</sub>-optimized threshold)</h3>
@@ -195,14 +190,14 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
   </thead>
   <tbody>
     <tr>
-      <td>Non-Fraud (0)</td>
+      <td>Non-Fraud </td>
       <td>0.998</td>
       <td>0.996</td>
       <td>0.997</td>
       <td>553,574</td>
     </tr>
     <tr>
-      <td>Fraud (1)</td>
+      <td>Fraud </td>
       <td>0.287</td>
       <td>0.458</td>
       <td>0.353</td>
@@ -236,17 +231,10 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
 
 
 <h3>📊 Summary</h3>
-<ul>
-  <li>The model achieves very high overall accuracy (99.4%), but this is expected due to the extreme class imbalance.</li>
-  <li>ROC AUC of <strong>0.8341</strong> indicates the model can generally distinguish between fraud and non-fraud transactions.</li>
-  <li>PR AUC of <strong>0.1401</strong> is modest, reflecting the challenge of maintaining high precision and recall in rare-event detection.</li>
-  <li>At the optimized F<sub>2</sub> threshold, the model achieves a recall of <strong>45.8%</strong> for fraud cases, but with only <strong>28.7%</strong> precision.</li>
-  <li>This setting may be acceptable when catching more frauds is prioritized, even at the cost of more false alerts.</li>
-  <li>Nonetheless, the low precision means this model should not be used alone in production without additional filtering or validation mechanisms.</li>
-</ul>
+<p>
+  The model demonstrates strong discriminatory ability (ROC AUC: <strong>0.8341</strong>) and moderate fraud recall (<strong>45.8%</strong>) at the F<sub>2</sub>-optimized threshold, but its low precision (<strong>28.7%</strong>) and modest PR AUC (<strong>0.1401</strong>) highlight the challenges of rare-event detection and indicate that further filtering or post-processing would be necessary for reliable production use.
+</p>
 
-<p><strong>Conclusion:</strong> The logistic regression model shows promising recall performance in identifying fraudulent activity but suffers from low precision. It may be suitable for recall-sensitive scenarios or as a component in a larger fraud detection pipeline.</p>
-  
     <!-- Random Forest -->
 <div id="random-forest">
   <h3>2️⃣ Random Forest</h3>
