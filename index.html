@@ -139,7 +139,7 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
     <li>
       <strong>Numerical Variables encoding</strong>
       <ul>
-        <li>Scaled <code>amt</code> and <code>age_at_transaction</code> using <code>StandardScaler</code>.</li>
+        <li>Scaled <code>amt</code> and <code>age_at_transaction</code> using <code>StandardScaler</code>， as Logistic Regression is a linear model trained using gradient descent, which is highly sensitive to feature scales. StandardScaler can reshape the cost function to be more symmetric, helping the model train faster and more reliably. Plus, standardscaling the varibales ensures that regularization treats all features equally, improving model generalization and interpretability.</li>
       </ul>
     </li>
   </ol>
@@ -169,11 +169,12 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
 </ul>
 
 <h3>📈 Performance Metrics</h3>
-  <h3>📉 Precision-Recall Curve</h3>
+
+<h4>📉 Precision-Recall Curve</h3>
 <img src="PR_Curve_lr.png" alt="Precision-Recall Curve">
 
 
-<h3>📉 ROC Curve</h3>
+<h4>📉 ROC Curve</h3>
 <img src="ROC_Curve_lr.png" alt="ROC Curve">
 </ul>
 
@@ -237,50 +238,125 @@ Consequently, imbalanced data can cause the model to overfit the dominant class 
 
     <!-- Random Forest -->
 <div id="random-forest">
-  <h3>2️⃣ Random Forest</h3>
-    <ol>
-      <li>Using the Random Forest with only class_weight='balanced', the model achieved a precision of 0.84 and a recall of 0.69. This configuration prioritized reducing false negatives, only correctly flagging 69% of fraudulent transactions while maintaining a high level of precision.</li>
-          <img src="rf_class_rep1.jpg" width="700" ></li>
-      <li>Next, I applied both SMOTE (oversampling the minority class at a 0.5 ratio) and random undersampling of the majority class. While this boosted recall to 0.87—meaning the vast majority of fraud cases were detected—it came at the cost of precision dropping to 0.41. In practical terms, many non-fraudulent transactions were now being misclassified as fraud.</li>
-                <img src="rf_class_rep2.jpg" width="700" ></li>
-      <li>Finally, I tried to remove undersampling and reduce the SMOTE ratio from 0.5 to 0.1. I then used the Precision–Recall curve to identify the optimal decision threshold for maximizing the F1 score. With this tuned setup, the model struck a better balance, yielding a precision of 0.766 and a recall of 0.723.
-         <img src="rf_class_rep3.jpg" width="700" ></li>
-    </ol>
-  </p>
-    <h3>📊 Evaluating the Random forest Model: ROC & AUC and PR Curve,</h3>
+<h2>📊 Random Forest Model Evaluation Report</h2>
+
+<h3>📌 Overview</h3>
+<ul>
+  <li><strong>Model:</strong> Random Forest</li>
+  <li><strong>Preprocessing:</strong> StandardScaler (for <code>amt</code> & <code>age_scaled</code>)</li>
+  <li><strong>Resampling:</strong> SMOTE (10%) + RandomUnderSampler (balanced)<br>
+    <em>We use a low SMOTE ratio of 10% to avoid over-generating synthetic fraud samples. Fraud data is often heterogeneous, and high SMOTE ratios can introduce unrealistic patterns that reduce model generalization. A small ratio preserves natural class imbalance and helps focus on core fraud patterns.</em>
+  </li>
+  <li><strong>Evaluation Focus:</strong> F<sub>2</sub> score (recall-focused)<br>
+    <em>In credit card fraud detection, false negatives are more costly than false positives. Therefore, F<sub>2</sub> is used to prioritize recall over precision.</em>
+  </li>
+</ul>
+
+<h3>🔍 Threshold Optimization</h3>
+<ul>
+  <li><strong>Best threshold for F<sub>2</sub>:</strong> 0.7800</li>
+  <li><strong>Maximum F<sub>2</sub> score:</strong> 0.6433</li>
+  <li><strong>F<sub>2</sub> score at threshold:</strong> 0.6395</li>
+</ul>
+
+<h3>📈 Performance Metrics</h3>
+<ul>
+<h4>📉 Precision-Recall Curve</h3>
+<img src="PR_Curve_rf.png" alt="Random Forest PR Curve" style="max-width:90%; margin-bottom:20px;">
+
+<h4>📉 ROC Curve</h3>
+<img src="ROC_Curve_rf.png" alt="Random Forest ROC Curve" style="max-width:90%; margin-bottom:20px;">
   
-      <h4>PR Curve</h4>
-  <img src="PR_Cuver_rf.png" width="700" alt="RF Confusion Matrix">
-   <p><strong>Key takeaway:</strong> At very low recall , we can get near-perfect precision, but beyond ~0.7 recall precision dips below 0.8. The red dot marks the threshold (≈0.73) that maximizes F₁, giving us about precision ≈ 0.77 and recall ≈ 0.73. Thus, we can strike a balance—catch roughly 73% of frauds while still being right about 77% of the time.</p>
-           
-     <h4>ROC Curve</h4>
-  <img src="ROC_Curve_rf.png" width="700" alt="RF ROC & AUC">
-    <p><strong>Key takeaway:</strong> The curve almost hugs the top-left corner, which is ideal.This model can almost perfectly rank fraud vs. non-fraud.Near-perfect AUC means high detection with very low false alarms.</p>
+<li><strong>OOB Score (on resampled train):</strong> 0.9948</li>
+</ul>
 
+<h3>📋 Classification Report (at F<sub>2</sub>-optimized threshold)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Class</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1-Score</th>
+      <th>Support</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Non-Fraud (0)</td>
+      <td>0.999</td>
+      <td>0.997</td>
+      <td>0.998</td>
+      <td>553,574</td>
+    </tr>
+    <tr>
+      <td>Fraud (1)</td>
+      <td>0.472</td>
+      <td>0.702</td>
+      <td>0.565</td>
+      <td>2,145</td>
+    </tr>
+  </tbody>
+</table>
 
-  </p>
-    </li>
-    <h3>📊 Feature Importance</h3>
-      <div>
-        <h4>1️⃣ Gini-based Importance</h4>
-        <img src="feature_importance_rf.png" width="700" alt="RF Gini Importance">
-        
-        <h4>2️⃣ Permutation-based Importance</h4>
-        <img src="permutation_importance_rf.png" width="700" alt="RF Permutation Importance">
-        
-    <p><strong>Note:</strong> Both the Gini‐based and permutation‐based importance rankings confirm that transaction amount and category are by far the most influential predictors in Random Forest Model, with the other three features contributing only marginally. The Gini scores  somewhat overstate the gap between amt and category_Code, whereas permutation importance reveals they’re nearly equally critical to model performance. In practice, this means the fraud detector model I built relies almost entirely on those two variables. </p>
-    </li>
-  </ol>
+<h3>🧮 Confusion Matrix</h3>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Predicted: 0</th>
+      <th>Predicted: 1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actual: 0</td>
+      <td>TN = 551,892</td>
+      <td>FP = 1,682</td>
+    </tr>
+    <tr>
+      <td>Actual: 1</td>
+      <td>FN = 640</td>
+      <td>TP = 1,505</td>
+    </tr>
+  </tbody>
+</table>
+  
+<h3>🧠 Feature Importance Analysis</h3>
 
+<h4>🌲 Gini Importance</h4>
+<p>
+  <img src="Feature_Importance_rf.png" alt="Feature Importance" style="max-width:90%; margin-bottom:20px;">
+  <strong>What it measures:</strong> How frequently a feature is used in the decision trees and how much it reduces node impurity (Gini index). Higher values indicate more frequent and effective splits.<br>
+  The Gini-based ranking shows <code>amt</code> as the dominant feature (~0.7), followed by <code>category_Code</code> (~0.18). Other features such as <code>age_scaled</code> and <code>job_freq</code> contribute minimally to the tree structure.
 </p>
-  <h3>📊 SHAP Analysis ( Fraud Data) </h3>
-  <div>
-    <img src="SHAP_waterfall1_rf.png" width="700" alt="SHAP Waterfall 1">
+
+<h4>🧪 Permutation Importance</h4>
+<p>
+  <img src="Permutation_Importance_rf.png" alt="Permutation Importance" style="max-width:90%; margin-bottom:20px;">
+  <strong>What it measures:</strong> How much a feature contributes to the model's predictive performance (e.g., F<sub>2</sub> score), by observing performance drops when the feature is randomly shuffled.<br>
+  The permutation results confirm that both <code>amt</code> and <code>category_Code</code> are crucial to the model. Their removal causes a significant decline in F<sub>2</sub>, indicating strong real-world importance.
+</p>
+
+<h4>🔍 SHAP Waterfall Plots (Top 3 Fraud Cases)</h4>
+<p>
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+    <img src="SHAP_waterfall_rf1.png" alt="SHAP Waterfall Plot 1" style="width: 32%; margin-bottom:20px;">
+    <img src="SHAP_waterfall_rf2.png" alt="SHAP Waterfall Plot 2" style="width: 32%; margin-bottom:20px;">
+    <img src="SHAP_waterfall_rf3.png" alt="SHAP Waterfall Plot 3" style="width: 32%; margin-bottom:20px;">
   </div>
-    <img src="SHAP_waterfall2_rf.png" width="700" alt="SHAP Waterfall 2">
-  </div>
-    <p><strong> <class="insight">🔍 Interpretation of Waterfall Plot:</strong> In each case, the transaction amount (amt) is the single biggest push (+0.52/ +0.53), followed by the category_Code=2 (+0.45/ +0.46). The age_scaled and job_freq features add only a sliver (+0.01 or less), while gender_le slightly suppresses the score. In short, Random Forest flags these two transactions as fraud almost entirely on the basis of an unusually large amount and a high‐risk category—other features barely move the needle.</p>
+  <strong>What it measures:</strong> The individual contribution of each feature to a specific prediction. SHAP uses game theory to calculate how each feature pushes the prediction higher or lower.<br>
+  These plots highlight how <code>amt</code> and <code>category_Code</code> consistently act as strong positive contributors to fraud predictions in all three cases.
+</p>
+
+<p><strong>Conclusion:</strong> <code>amt</code> and <code>category_Code</code> are consistently the most influential features across Gini, permutation, and SHAP explanations. While Gini reflects tree structure, permutation ties directly to predictive performance, and SHAP gives the most detailed per-instance explanation.</p>
+
   
+<h3>📊 Summary</h3>
+<p>
+  The Random Forest model achieves excellent ROC AUC (0.9783) and strong PR AUC (0.6044), showing effective separation of fraud and non-fraud transactions even under class imbalance. At the F<sub>2</sub>-optimized threshold of 0.78, the model captures 70.2% of fraud cases with 47.2% precision, reflecting a solid recall-focused trade-off. The out-of-bag (OOB) score on the resampled training set is 0.9948, indicating good model generalization. However, the relatively low precision highlights the need for further filtering or downstream verification in production use.
+</p>
+
   <h2>📦 Cost Evaluation</h2>
 To evaluate the cost performance of the model, I first defined a cost ratio between false negatives (FN) and false positives (FP) as 50:1. In this case, each FN was assigned a cost of $500, and each FP a cost of $10. These values reflect the real-world impact of fraud detection, where failing to detect a fraud (FN) is far more costly than mistakenly flagging a normal transaction (FP).
   <img src="Cost_Sensitivity_lg.png" width="700" alt="Logistic Regression model cost graph">
