@@ -97,7 +97,7 @@ This extreme class imbalance poses a significant challenge for classification mo
   
 <h2>⚠️ Why Tackling Imbalanced Data is Important</h3>
 <p>
-For a classification model, especially in domains such as fraud detection, medical diagnostics, and spam filtering, rare but high-impact cases are often the primary concern. However, if imbalanced data is not properly addressed during training, the model may appear to perform well—achieving high overall accuracy—while completely failing to detect the minority class. This results in misleading evaluation metrics and significantly reduces the model’s practical value.In such datasets, the minority class often behaves like an outlier due to its sparse distribution in the feature space. Many models interpret these rare patterns as noise or unrepresentative signals, leading them to underfit or ignore the minority class. Since most algorithms aim to minimize overall error, they are naturally biased toward the majority class.Consequently, imbalanced data can cause the model to overfit the dominant class while neglecting the minority class, which—ironically—is often the class of greatest importance. Addressing this imbalance is therefore critical to building models that are not only statistically sound but also effective in real-world decision-making.
+For a classification model, especially in domains such as fraud detection, medical diagnostics, and spam filtering, rare but high-impact cases are often the primary concern. However, if imbalanced data is not properly addressed during training, the model may appear to perform well—achieving high overall accuracy—while completely failing to detect the minority class. This results in misleading evaluation metrics and significantly reduces the model’s practical value.In such datasets, the minority class often behaves like an outlier due to its sparse distribution in the feature space. Many models interpret these rare patterns as noise or unrepresentative signals, leading them to underfit or ignore the minority class. Since most algorithms aim to minimize overall error, they are naturally biased toward the majority class.Consequently, imbalanced data can cause the model to overfit the dominant class while neglecting the minority class. Addressing this imbalance is therefore critical to building models that are not only statistically sound but also effective in real-world decision-making.
 </p>
 
 <h3>📏 Metrics & Methods for Imbalanced Data</h3>
@@ -109,22 +109,24 @@ For a classification model, especially in domains such as fraud detection, medic
   
 <h3>📌 Why SMOTE + Undersampling + <code>class_weight='balanced'</code> should be avoided in Logistic Regression but works in Random Forest</h2>
 
-When handling imbalanced datasets, SMOTE (oversampling), undersampling, and <code>class_weight='balanced'</code> are commonly used. However, using all three together in <strong>Logistic Regression</strong> may harm model performance, while doing so in <strong>Random Forest</strong> is generally acceptable.</p>
+When handling imbalanced datasets, SMOTE (oversampling), undersampling, and <code>class_weight='balanced'</code> are commonly used. However, using all three together in <strong>Logistic Regression</strong> may harm model performance, while doing so in <strong>Random Forest</strong> is acceptable.</p>
 
 <h4>⚠️ In Logistic Regression:</h3>
 <ul>
-  <li>Logistic Regression models probabilities based on training distribution.</li>
-  <li>SMOTE + undersampling already adjusts class balance. Adding <code>class_weight='balanced'</code> again causes <strong>double compensation</strong>, distorting the loss function and shifting the intercept toward the minority class.</li>
-  <li>This often leads to <strong>overestimated fraud probabilities</strong> and poor calibration when evaluated on real-world, imbalanced data (e.g., 1:172 in fraudTrain).</li>
+   <li>Logistic Regression tries to find one straight boundary (line or plane) to separate classes.</li>
+  <li>SMOTE + undersampling already balance the dataset.</li>
+  <li>Adding <code>class_weight='balanced'</code> again makes the model <strong>overcompensate</strong> for the minority class.</li>
+  <li>This shifts the decision boundary too far toward the majority class, resulting in <strong>too many false fraud predictions</strong>.</li>
+  <li>The model may look good on resampled data, but performs poorly on real-world data (which is still highly imbalanced).</li>
 </ul>
 
 <h4>✅ In Random Forest:</h3>
 <ul>
-  <li>Random Forest splits trees using Gini or Entropy, and benefits from both resampling and class weights.</li>
-  <li>It does not rely on global probability modeling, so combining SMOTE, undersampling, and class weights can work <strong>synergistically</strong>.</li>
-  <li>Ensemble averaging makes Random Forest more robust to synthetic noise and sample imbalance.</li>
+  <li>Random Forest builds many small trees on random subsets of data (bootstrapped samples).</li>
+  <li>It doesn't rely on one fixed boundary — it uses <strong>majority voting</strong> to make predictions.</li>
+  <li>SMOTE adds some variety, undersampling reduces bias, and class weights guide tree splits — but Random Forest can <strong>handle all of them together</strong>.</li>
+  <li>Its ensemble nature helps absorb noise and balance different perspectives.</li>
 </ul>
-
 <hr>
 
 <h3>🎯 Why SMOTE=0.01 and Undersampling (0.2 / 0.15) are good choices for my model building in consideratioin of the  dataset I used ?</h2>
@@ -135,20 +137,16 @@ In Train data, there are 7,506 fraud samples out of 1,296,675 transactions (≈ 
 <h4>✅ Why SMOTE=0.01 is effective:</h3>
 <ol>
   <li><strong>Minimizes synthetic noise:</strong> A small amount of oversampling avoids flooding the model with artificial fraud cases, which could blur the boundary.<br>
-    <em>He & Garcia, 2009</em>
   </li>
   <li><strong>Improves class boundary coverage:</strong> Even light oversampling helps highlight rare fraud patterns near the decision boundary.<br>
-    <em>Fernández et al., 2018</em>
   </li>
 </ol>
 
 <h4>✅ Why moderate undersampling helps:</h3>
 <ol>
   <li><strong>Retains majority class diversity:</strong> Reducing the majority class to 15–20% helps balance the data while keeping enough real transaction information.<br>
-    <em>Batista et al., 2004</em>
   </li>
   <li><strong>Improves recall and reduces overfitting:</strong> When combined with minimal SMOTE, it allows models to generalize better and boost PR-AUC.<br>
-    <em>Fernández et al., 2018</em>
   </li>
 </ol>
 
@@ -415,7 +413,7 @@ In Train data, there are 7,506 fraud samples out of 1,296,675 transactions (≈ 
   
 <h3>📊 Summary</h3>
 <p>
-  The Random Forest model achieves excellent ROC AUC (0.9902) and strong PR AUC (0.5914), showing effective separation of fraud and non-fraud transactions even under class imbalance. At the F<sub>2</sub>-optimized threshold of 0.85, the model captures 70.2% of fraud cases with 47.2% precision, reflecting a solid recall-focused trade-off. The out-of-bag (OOB) score on the resampled training set is 0.9810, indicating good model generalization. However, the relatively low precision highlights the need for further filtering or downstream verification in production use.
+  The Random Forest model achieves excellent ROC AUC (0.9902) and strong PR AUC (0.5914), showing effective separation of fraud and non-fraud transactions even under class imbalance. At the F<sub>2</sub>-optimized threshold of 0.85, the model captures 78.2% of fraud cases with 50.1% precision, reflecting a solid recall-focused trade-off. The out-of-bag (OOB) score on the resampled training set is 0.9810, indicating good model generalization. However, the relatively low precision highlights the need for further filtering or downstream verification in production use.
 </p>
 
   <h2>📦 Cost Evaluation</h2>
