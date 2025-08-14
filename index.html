@@ -95,7 +95,7 @@ The  dataset contains a total of <strong>1,844,974</strong> credit card transact
 This extreme class imbalance poses a significant challenge for classification models. While the dataset is dominated by legitimate transactions, the minority class (fraudulent cases) is of primary importance, especially in practical fraud detection systems. 
 </p>
   
-<h4>⚠️ Why Tackling Imbalanced Data is Important</h3>
+<h2>⚠️ Why Tackling Imbalanced Data is Important</h3>
 <p>
 For a classification model, especially in domains such as fraud detection, medical diagnostics, and spam filtering, rare but high-impact cases are often the primary concern. However, if imbalanced data is not properly addressed during training, the model may appear to perform well—achieving high overall accuracy—while completely failing to detect the minority class. This results in misleading evaluation metrics and significantly reduces the model’s practical value.In such datasets, the minority class often behaves like an outlier due to its sparse distribution in the feature space. Many models interpret these rare patterns as noise or unrepresentative signals, leading them to underfit or ignore the minority class. Since most algorithms aim to minimize overall error, they are naturally biased toward the majority class.Consequently, imbalanced data can cause the model to overfit the dominant class while neglecting the minority class, which—ironically—is often the class of greatest importance. Addressing this imbalance is therefore critical to building models that are not only statistically sound but also effective in real-world decision-making.
 </p>
@@ -106,6 +106,63 @@ For a classification model, especially in domains such as fraud detection, medic
   <li><strong>Undersampling:</strong> Randomly removes samples from the majority class to balance the dataset. 
   <li><strong>F<sub>2</sub> Score:</strong> A weighted version of the F1-score that prioritizes <strong>recall</strong> over precision, making it more suitable for fraud detection where missing a fraud is more costly than false alerts.</li>
 </ul>
+  
+<h3>📌 Why SMOTE + Undersampling + <code>class_weight='balanced'</code> Should Be Avoided in Logistic Regression but Works in Random Forest</h2>
+
+<p>When handling imbalanced datasets, SMOTE (oversampling), undersampling, and <code>class_weight='balanced'</code> are commonly used. However, using all three together in <strong>Logistic Regression</strong> may harm model performance, while doing so in <strong>Random Forest</strong> is generally acceptable.</p>
+
+<h4>⚠️ In Logistic Regression:</h3>
+<ul>
+  <li>Logistic Regression models probabilities based on training distribution.</li>
+  <li>SMOTE + undersampling already adjusts class balance. Adding <code>class_weight='balanced'</code> again causes <strong>double compensation</strong>, distorting the loss function and shifting the intercept toward the minority class.</li>
+  <li>This often leads to <strong>overestimated fraud probabilities</strong> and poor calibration when evaluated on real-world, imbalanced data (e.g., 1:172 in fraudTrain).</li>
+</ul>
+
+<h4>✅ In Random Forest:</h3>
+<ul>
+  <li>Random Forest splits trees using Gini or Entropy, and benefits from both resampling and class weights.</li>
+  <li>It does not rely on global probability modeling, so combining SMOTE, undersampling, and class weights can work <strong>synergistically</strong>.</li>
+  <li>Ensemble averaging makes Random Forest more robust to synthetic noise and sample imbalance.</li>
+</ul>
+
+<p><strong>References:</strong><br>
+<a href="https://doi.org/10.1109/TKDE.2008.239" target="_blank">He & Garcia, 2009</a><br>
+<a href="https://doi.org/10.1007/978-3-319-98074-4" target="_blank">Fernández et al., 2018</a>
+</p>
+
+<hr>
+
+<h3>🎯 Why SMOTE=0.01 and Undersampling (0.2 / 0.15) are good choices for my model building in consideratioin of the  dataset I used ?</h2>
+
+<p><strong>Dataset:</strong> In Train data, there are 7,506 fraud samples out of 1,296,675 transactions (≈ 1:172). My settings:</p>
+<ul>
+
+<h4>✅ Why SMOTE=0.01 is effective:</h3>
+<ol>
+  <li><strong>Minimizes synthetic noise:</strong> A small amount of oversampling avoids flooding the model with artificial fraud cases, which could blur the boundary.<br>
+    <em>He & Garcia, 2009</em>
+  </li>
+  <li><strong>Improves class boundary coverage:</strong> Even light oversampling helps highlight rare fraud patterns near the decision boundary.<br>
+    <em>Fernández et al., 2018</em>
+  </li>
+</ol>
+
+<h4>✅ Why moderate undersampling helps:</h3>
+<ol>
+  <li><strong>Retains majority class diversity:</strong> Reducing the majority class to 15–20% helps balance the data while keeping enough real transaction information.<br>
+    <em>Batista et al., 2004</em>
+  </li>
+  <li><strong>Improves recall and reduces overfitting:</strong> When combined with minimal SMOTE, it allows models to generalize better and boost PR-AUC.<br>
+    <em>Fernández et al., 2018</em>
+  </li>
+</ol>
+
+<h3>🔍 Model-specific notes:</h3>
+<ul>
+  <li><strong>Random Forest:</strong> Tolerates minor synthetic noise well; SMOTE=0.01 and undersampling=0.2 is a balanced setup for robustness.</li>
+  <li><strong>Logistic Regression:</strong> More sensitive to class distribution and probability calibration. SMOTE=0.01 with undersampling=0.15 improves class separation without using <code>class_weight='balanced'</code>.</li>
+</ul>
+
 
 
 
@@ -164,8 +221,8 @@ For a classification model, especially in domains such as fraud detection, medic
 <h3>📌 Overview</h3>
 <ul>
   <li><strong>Model:</strong> Logistic Regression</li>
-  <li><strong>Resampling:</strong> SMOTE (10%) + RandomUnderSampler (balanced)<br>
-    <em>I use a low SMOTE ratio of 10% to avoid over-generating synthetic fraud samples. Fraud data is often heterogeneous, and high SMOTE ratios (e.g., 0.5) can create unrealistic combinations of dissimilar fraud cases. This synthetic noise may confuse the model and hurt test recall. A smaller ratio helps the model focus on core fraud patterns, reduces overfitting, and preserves the natural class imbalance—which reflects real-world fraud clustering.</em>
+  <li><strong>Resampling:</strong> SMOTE (0.1) + RandomUnderSampler (0.15)<br>
+    <em>I use a low SMOTE ratio to avoid over-generating synthetic fraud samples. Fraud data is often heterogeneous, and high SMOTE ratios (e.g., 0.5) can create unrealistic combinations of dissimilar fraud cases. This synthetic noise may confuse the model and hurt test recall. A smaller ratio helps the model focus on core fraud patterns, reduces overfitting, and preserves the natural class imbalance—which reflects real-world fraud clustering.</em>
   </li>
   <li><strong>Evaluation Focus:</strong> F<sub>2</sub> score (recall-focused)<br>
     <em>In credit card fraud detection, the cost of missing a fraudulent transaction (false negative) is typically much higher than flagging a legitimate one (false positive). Therefore, I use the F<sub>2</sub> score to prioritize recall over precision during model evaluation.</em>
@@ -174,8 +231,8 @@ For a classification model, especially in domains such as fraud detection, medic
 
 <h3>🔍 Threshold Optimization</h3>
 <ul>
-  <li><strong>Best threshold for F<sub>2</sub>:</strong> 0.9758</li>
-  <li><strong>Maximum F<sub>2</sub> score:</strong> 0.4091</li>
+  <li><strong>Best threshold for F<sub>2</sub>:</strong> 0.8074</li>
+  <li><strong>Maximum F<sub>2</sub> score:</strong> 0.4071</li>
 </ul>
 
 <h3>📈 Performance Metrics</h3>
@@ -209,9 +266,9 @@ For a classification model, especially in domains such as fraud detection, medic
     </tr>
     <tr>
       <td>Fraud </td>
-      <td>0.287</td>
-      <td>0.458</td>
-      <td>0.353</td>
+      <td>0.285</td>
+      <td>0.456</td>
+      <td>0.351</td>
       <td>2,145</td>
     </tr>
   </tbody>
@@ -229,13 +286,13 @@ For a classification model, especially in domains such as fraud detection, medic
   <tbody>
     <tr>
       <td>Actual: 0</td>
-      <td>TN = 551,132</td>
-      <td>FP = 2,442</td>
+      <td>TN = 551,120</td>
+      <td>FP = 2,454</td>
     </tr>
     <tr>
       <td>Actual: 1</td>
-      <td>FN = 1,163</td>
-      <td>TP = 982</td>
+      <td>FN = 1,167</td>
+      <td>TP = 978</td>
     </tr>
   </tbody>
 </table>
@@ -243,7 +300,7 @@ For a classification model, especially in domains such as fraud detection, medic
 
 <h3>📊 Summary</h3>
 <p>
-  The model demonstrates strong discriminatory ability (ROC AUC: <strong>0.8341</strong>) and moderate fraud recall (<strong>45.8%</strong>) at the F<sub>2</sub>-optimized threshold, but its low precision (<strong>28.7%</strong>) and modest PR AUC (<strong>0.1401</strong>) highlight the challenges of rare-event detection and indicate that further filtering or post-processing would be necessary for reliable production use.
+  The model demonstrates strong discriminatory ability (ROC AUC: <strong>0.8405</strong>) and moderate fraud recall (<strong>45.6%</strong>) at the F<sub>2</sub>-optimized threshold, but its low precision (<strong>28.5%</strong>) and modest PR AUC (<strong>0.1465</strong>) highlight the challenges of rare-event detection and indicate that further filtering or post-processing would be necessary for reliable production use.
 </p>
 
     <!-- Random Forest -->
@@ -253,8 +310,8 @@ For a classification model, especially in domains such as fraud detection, medic
 <h3>📌 Overview</h3>
 <ul>
   <li><strong>Model:</strong> Random Forest</li>
-  <li><strong>Resampling:</strong> SMOTE (10%) + RandomUnderSampler (balanced)<br>
-    <em>I use a low SMOTE ratio of 10% to avoid over-generating synthetic fraud samples. Fraud data is often heterogeneous, and high SMOTE ratios can introduce unrealistic patterns that reduce model generalization. A small ratio preserves natural class imbalance and helps focus on core fraud patterns.</em>
+  <li><strong>Resampling:</strong> SMOTE (0.01) + RandomUnderSampler (0.2)<br>
+    <em>I use a low SMOTE ratio to avoid over-generating synthetic fraud samples. Fraud data is often heterogeneous, and high SMOTE ratios can introduce unrealistic patterns that reduce model generalization. A small ratio preserves natural class imbalance and helps focus on core fraud patterns.</em>
   </li>
   <li><strong>Evaluation Focus:</strong> F<sub>2</sub> score (recall-focused)<br>
     <em>In credit card fraud detection, false negatives are more costly than false positives. Therefore, F<sub>2</sub> is used to prioritize recall over precision.</em>
@@ -263,9 +320,9 @@ For a classification model, especially in domains such as fraud detection, medic
 
 <h3>🔍 Threshold Optimization</h3>
 <ul>
-  <li><strong>Best threshold for F<sub>2</sub>:</strong> 0.7800</li>
-  <li><strong>Maximum F<sub>2</sub> score:</strong> 0.6433</li>
-  <li><strong>F<sub>2</sub> score at threshold:</strong> 0.6395</li>
+  <li><strong>Best threshold for F<sub>2</sub>:</strong> 0.8500</li>
+  <li><strong>Maximum F<sub>2</sub> score:</strong> 0.7042</li>
+
 </ul>
 
 <h3>📈 Performance Metrics</h3>
@@ -276,7 +333,7 @@ For a classification model, especially in domains such as fraud detection, medic
 <h4>📉 ROC Curve</h3>
 <img src="ROC_Curve_rf.png" alt="Random Forest ROC Curve" style="max-width:90%; margin-bottom:20px;">
   
-<li><strong>OOB Score (on resampled train):</strong> 0.9948</li>
+<li><strong>OOB Score (on resampled train):</strong> 0.9810</li>
 </ul>
 
 <h3>📋 Classification Report (at F<sub>2</sub>-optimized threshold)</h3>
@@ -300,9 +357,9 @@ For a classification model, especially in domains such as fraud detection, medic
     </tr>
     <tr>
       <td>Fraud (1)</td>
-      <td>0.472</td>
-      <td>0.702</td>
-      <td>0.565</td>
+      <td>0.501</td>
+      <td>0.782</td>
+      <td>0.611</td>
       <td>2,145</td>
     </tr>
   </tbody>
@@ -320,13 +377,13 @@ For a classification model, especially in domains such as fraud detection, medic
   <tbody>
     <tr>
       <td>Actual: 0</td>
-      <td>TN = 551,892</td>
-      <td>FP = 1,682</td>
+      <td>TN = 551,904</td>
+      <td>FP = 1,670</td>
     </tr>
     <tr>
       <td>Actual: 1</td>
-      <td>FN = 640</td>
-      <td>TP = 1,505</td>
+      <td>FN = 468</td>
+      <td>TP = 1,677</td>
     </tr>
   </tbody>
 </table>
@@ -363,7 +420,7 @@ For a classification model, especially in domains such as fraud detection, medic
   
 <h3>📊 Summary</h3>
 <p>
-  The Random Forest model achieves excellent ROC AUC (0.9783) and strong PR AUC (0.6044), showing effective separation of fraud and non-fraud transactions even under class imbalance. At the F<sub>2</sub>-optimized threshold of 0.78, the model captures 70.2% of fraud cases with 47.2% precision, reflecting a solid recall-focused trade-off. The out-of-bag (OOB) score on the resampled training set is 0.9948, indicating good model generalization. However, the relatively low precision highlights the need for further filtering or downstream verification in production use.
+  The Random Forest model achieves excellent ROC AUC (0.9902) and strong PR AUC (0.5914), showing effective separation of fraud and non-fraud transactions even under class imbalance. At the F<sub>2</sub>-optimized threshold of 0.85, the model captures 70.2% of fraud cases with 47.2% precision, reflecting a solid recall-focused trade-off. The out-of-bag (OOB) score on the resampled training set is 0.9810, indicating good model generalization. However, the relatively low precision highlights the need for further filtering or downstream verification in production use.
 </p>
 
   <h2>📦 Cost Evaluation</h2>
