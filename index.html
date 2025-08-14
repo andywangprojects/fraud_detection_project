@@ -107,9 +107,9 @@ For a classification model, especially in domains such as fraud detection, medic
   <li><strong>F<sub>2</sub> Score:</strong> A weighted version of the F1-score that prioritizes <strong>recall</strong> over precision, making it more suitable for fraud detection where missing a fraud is more costly than false alerts.</li>
 </ul>
   
-<h3>📌 Why SMOTE + Undersampling + <code>class_weight='balanced'</code> Should Be Avoided in Logistic Regression but Works in Random Forest</h2>
+<h3>📌 Why SMOTE + Undersampling + <code>class_weight='balanced'</code> should be avoided in Logistic Regression but works in Random Forest</h2>
 
-<p>When handling imbalanced datasets, SMOTE (oversampling), undersampling, and <code>class_weight='balanced'</code> are commonly used. However, using all three together in <strong>Logistic Regression</strong> may harm model performance, while doing so in <strong>Random Forest</strong> is generally acceptable.</p>
+When handling imbalanced datasets, SMOTE (oversampling), undersampling, and <code>class_weight='balanced'</code> are commonly used. However, using all three together in <strong>Logistic Regression</strong> may harm model performance, while doing so in <strong>Random Forest</strong> is generally acceptable.</p>
 
 <h4>⚠️ In Logistic Regression:</h3>
 <ul>
@@ -125,16 +125,11 @@ For a classification model, especially in domains such as fraud detection, medic
   <li>Ensemble averaging makes Random Forest more robust to synthetic noise and sample imbalance.</li>
 </ul>
 
-<p><strong>References:</strong><br>
-<a href="https://doi.org/10.1109/TKDE.2008.239" target="_blank">He & Garcia, 2009</a><br>
-<a href="https://doi.org/10.1007/978-3-319-98074-4" target="_blank">Fernández et al., 2018</a>
-</p>
-
 <hr>
 
 <h3>🎯 Why SMOTE=0.01 and Undersampling (0.2 / 0.15) are good choices for my model building in consideratioin of the  dataset I used ?</h2>
 
-<p><strong>Dataset:</strong> In Train data, there are 7,506 fraud samples out of 1,296,675 transactions (≈ 1:172). My settings:</p>
+In Train data, there are 7,506 fraud samples out of 1,296,675 transactions (≈ 1:172).
 <ul>
 
 <h4>✅ Why SMOTE=0.01 is effective:</h3>
