@@ -84,16 +84,12 @@
  <h2>📊 Class Imbalance Analysis </h2>
 
 <h3>🧾 Distribution of the Data</h3>
-<p>
-The  dataset contains a total of <strong>1,844,974</strong> credit card transaction records labeled as <code>is_fraud</code>, indicating whether a transaction is fraudulent (1) or not (0).
-</p>
 <ul>
-  <li><strong>Non-Fraudulent transactions (label 0):</strong> 1,835,624 (<strong>99.4941%</strong>)</li>
-  <li><strong>Fraudulent transactions (label 1):</strong> 9,350 (<strong>0.5059%</strong>)</li>
+<li><strong>The  dataset contains a total of <strong>1,844,974</strong> credit card transaction records.</li>
+<li><strong>Non-Fraudulent transactions (label 0):</strong> 1,835,624 (<strong>99.4941%</strong>)</li>
+<li><strong>Fraudulent transactions (label 1):</strong> 9,350 (<strong>0.5059%</strong>)</li>
+<li>This extreme class imbalance poses a significant challenge for classification models. While the dataset is dominated by legitimate transactions, the minority class (fraudulent cases) is of primary importance, especially in practical fraud detection systems. </li>
 </ul>
-<p>
-This extreme class imbalance poses a significant challenge for classification models. While the dataset is dominated by legitimate transactions, the minority class (fraudulent cases) is of primary importance, especially in practical fraud detection systems. 
-</p>
   
 <h2>⚠️ Why Tackling Imbalanced Data is Important</h3>
 <p>
@@ -108,9 +104,9 @@ For a classification model, especially in domains such as fraud detection, medic
 </ul>
   
 <h3>📌 Why SMOTE + Undersampling + <code>class_weight='balanced'</code> should be avoided in Logistic Regression but works in Random Forest</h2>
-
-When handling imbalanced datasets, SMOTE (oversampling), undersampling, and <code>class_weight='balanced'</code> are commonly used. However, using all three together in <strong>Logistic Regression</strong> may harm model performance, while doing so in <strong>Random Forest</strong> is acceptable.</p>
-
+<ul>
+<li>When handling imbalanced datasets, SMOTE (oversampling), undersampling, and <code>class_weight='balanced'</code> are commonly used. However, using all three together in <strong>Logistic Regression</strong> may harm model performance, while doing so in <strong>Random Forest</strong> is acceptable.</li>
+</ul>
 <h4>⚠️ In Logistic Regression:</h3>
 <ul>
    <li>Logistic Regression tries to find one straight boundary (line or plane) to separate classes.</li>
