@@ -457,10 +457,10 @@ Similarly, <a href="https://pages.cs.wisc.edu/~shavlik/cs760/papers/elkan.pdf" t
   </li>
 </ul>
 
-
+<h3>💰 Cost-Based Threshold Optimization (Logistic Regression)</h3>
   <img src="Cost_analysis_lr.png" width="700" alt="Logistic Regression model cost graph">
   
-  <p><strong>Note:</strong> <h3>💰 Cost-Based Threshold Optimization (Logistic Regression)</h3>
+  <p><strong>Note:</strong> 
 <p>
 Using a predefined cost matrix that assigns greater penalties to missed frauds (false negatives) than to false alerts (false positives), 
 I calculated the total cost of classification errors across different decision thresholds on the test set. 
@@ -481,10 +481,11 @@ The lowest total cost achieved is approximately <strong>$411,400</strong>, sugge
 delivers the most cost-effective fraud detection performance.
 </p>
 
-
+<p>
   </div>
+  <h3>💰 Cost-Based Threshold Optimization (Random Forest)</h3>
   <img src="Cost_analysis_rf.png" width="700" alt="Logistic Regression model cost graph">  
-  <p><strong>Note:</strong> <h3>💰 Cost-Based Threshold Optimization (Random Forest)</h3>
+  <p><strong>Note:</strong>
 <p>
 Using a cost-sensitive evaluation approach, I calculated the total financial cost of misclassification across various decision thresholds in the random forest model. 
 The cost function heavily penalizes false negatives (missed fraud) over false positives (false alarms), reflecting real-world priorities in fraud detection.
