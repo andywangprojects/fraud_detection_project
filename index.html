@@ -416,18 +416,111 @@ In Train data, there are 7,506 fraud samples out of 1,296,675 transactions (≈ 
   The Random Forest model achieves excellent ROC AUC (0.9902) and strong PR AUC (0.5914), showing effective separation of fraud and non-fraud transactions even under class imbalance. At the F<sub>2</sub>-optimized threshold of 0.85, the model captures 78.2% of fraud cases with 50.1% precision, reflecting a solid recall-focused trade-off. The out-of-bag (OOB) score on the resampled training set is 0.9810, indicating good model generalization. However, the relatively low precision highlights the need for further filtering or downstream verification in production use.
 </p>
 
-  <h2>📦 Cost Evaluation</h2>
-To evaluate the cost performance of the model, I first defined a cost ratio between false negatives (FN) and false positives (FP) as 50:1. In this case, each FN was assigned a cost of $500, and each FP a cost of $10. These values reflect the real-world impact of fraud detection, where failing to detect a fraud (FN) is far more costly than mistakenly flagging a normal transaction (FP).
-  <img src="Cost_Sensitivity_lg.png" width="700" alt="Logistic Regression model cost graph">
-  
-  <p><strong>Note:</strong>  Using these cost values, I calculated the total cost for different decision thresholds on the test set. The graph above shows how total cost changes as the probability threshold varies in the logistic model. It is clear that when the threshold is between 0.0 and 0.2, the total cost stays extremely high, around $3.8 million. This is likely because, at low thresholds, the model predicts too many positives, increasing the number of false positives.As the threshold increases, the total cost drops sharply, reaching the minimum point at a threshold of 0.65. This threshold represents the best trade-off between FPs and FNs, resulting in the lowest total cost. After this point, the total cost begins to rise again, but at a slower rate, remaining below $1.5 million. This suggests that the model performs best when the threshold is set around 0.65, with the minimum cost of $0.38 million helping reduce overall losses from fraud detection errors.<p>
-  </div>
-  <img src="Cost_Sensitivity_rf.png" width="700" alt="Logistic Regression model cost graph">  
-  <p><strong>Note:</strong>  Unlike the logistic regression model, the cost curve for the random forest model appears much smoother, with less fluctuation. As the probability threshold increases, the total cost slightly decreases at first, reaching its minimum at a very low threshold of 0.08. At this point, the minimum total cost is approximately $130,000.
-After this optimal threshold, the total cost starts to rise steadily. The cost reaches its highest point when the threshold is close to 1.0. This increase happens because, as the threshold becomes higher, fewer transactions are flagged as fraudulent. As a result, more fraud cases are missed, leading to a growing number of false negatives, which are far more costly in this scenario.
-Overall, the graph suggests that the random forest model performs best at a low threshold, around 0.08, where it can catch more fraud cases early and minimize total cost. This highlights the model’s strength in detecting fraud even with relatively low prediction probabilities.</p>
-    
 
+<h2>📦 Cost-Based Evaluation of Fraud Detection Model</h2>
+
+<p>
+To evaluate the cost performance of the model, I first defined a cost ratio between false negatives (FN) and false positives (FP) as <strong>50:1</strong>. 
+In this case, each FN was assigned a cost of <strong>$500</strong>, and each FP a cost of <strong>$10</strong>. 
+These values reflect the real-world impact of fraud detection, where failing to detect a fraud (FN) is far more costly than mistakenly flagging a normal transaction (FP).
+</p>
+
+<p>
+This cost structure is consistent with findings from prior research. 
+For example, <a href="https://doi.org/10.1016/j.patcog.2015.03.014" target="_blank"><strong>Dal Pozzolo et al. (2015)</strong></a> noted that while false positives are frequent in credit card fraud detection, their financial impact is minor compared to that of false negatives, which often lead to direct monetary loss. 
+Similarly, <a href="https://pages.cs.wisc.edu/~shavlik/cs760/papers/elkan.pdf" target="_blank"><strong>Elkan (2001)</strong></a> emphasized that in real-world classification problems, misclassification costs are rarely equal and often differ by an order of magnitude or more, making cost-sensitive learning essential. 
+<a href="https://doi.org/10.1016/j.ins.2019.12.080" target="_blank"><strong>Carcillo et al. (2018)</strong></a> also applied a cost matrix where false negatives were penalized 100 times more than false positives, showing improved business-aligned performance when optimizing for total cost rather than accuracy alone.
+</p>
+
+<h3>📚 References (APA Format)</h3>
+<ul>
+  <li>
+    <a href="https://doi.org/10.1016/j.patcog.2015.03.014" target="_blank">
+      Dal Pozzolo, A., Caelen, O., Le Borgne, Y. A., Waterschoot, S., & Bontempi, G. (2015). 
+      <em>Credit card fraud detection: A realistic modeling and a novel learning strategy.</em> 
+      Pattern Recognition, 48(10), 3151–3160.
+    </a>
+  </li>
+  <li>
+    <a href="https://pages.cs.wisc.edu/~shavlik/cs760/papers/elkan.pdf" target="_blank">
+      Elkan, C. (2001). 
+      <em>The foundations of cost-sensitive learning.</em> 
+      Proceedings of the 17th International Joint Conference on Artificial Intelligence (IJCAI), 973–978.
+    </a>
+  </li>
+  <li>
+    <a href="https://doi.org/10.1016/j.ins.2019.12.080" target="_blank">
+      Carcillo, F., Dal Pozzolo, A., Le Borgne, Y. A., Caelen, O., Mazzer, Y., & Bontempi, G. (2018). 
+      <em>Combining unsupervised and supervised learning in credit card fraud detection.</em> 
+      Information Sciences, 557, 317–331.
+    </a>
+  </li>
+</ul>
+
+
+  <img src="Cost_analysis_lr.png" width="700" alt="Logistic Regression model cost graph">
+  
+  <p><strong>Note:</strong> <h3>💰 Cost-Based Threshold Optimization (Logistic Regression)</h3>
+<p>
+Using a predefined cost matrix that assigns greater penalties to missed frauds (false negatives) than to false alerts (false positives), I calculated the total cost of classification errors across different decision thresholds on the test set. The graph above shows how total cost varies with the probability threshold in the logistic regression model.
+</p>
+<p>
+At low thresholds (between 0.0 and 0.2), the model predicts too many transactions as fraud, resulting in a surge of false positives and keeping the total cost above $5 million. As the threshold increases, the cost declines sharply, reaching its minimum at a threshold of <strong>0.27</strong>. This threshold provides the best trade-off between false positives and false negatives, minimizing the overall financial impact of prediction errors.
+</p>
+Beyond 0.27, the total cost begins to rise again, but more gradually, staying under $2 million. The lowest total cost achieved is approximately <strong>$411,400</strong>, suggesting that setting the threshold near <strong>0.27</strong> delivers the most cost-effective fraud detection performance.
+</p>
+
+  </div>
+  <img src="Cost_analysis_rf.png" width="700" alt="Logistic Regression model cost graph">  
+  <p><strong>Note:</strong> <h3>💰 Cost-Based Threshold Optimization (Random Forest)</h3>
+<p>
+Using a cost-sensitive evaluation approach, I calculated the total financial cost of misclassification across various decision thresholds in the random forest model. The cost function heavily penalizes false negatives (missed fraud) over false positives (false alarms), reflecting real-world priorities in fraud detection.
+</p>
+<p>
+As shown in the graph above, total cost is extremely high at thresholds near 0.0 due to an overwhelming number of false positives. As the threshold increases, the cost drops significantly and stabilizes between 0.2 and 0.7. The lowest total cost is observed at a threshold of <strong>0.46</strong>, where the model achieves the optimal trade-off between fraud detection and false alerts.
+</p>
+<p>
+At this threshold, the minimum cost is approximately <strong>$186,480</strong>, representing the most cost-effective configuration for the random forest model on the test set. Beyond this point, the cost begins to rise again gradually, indicating a decline in fraud detection effectiveness.
+</p>
+
+<h2>✅ Evaluating the Hidden Cost of Manual Review in Fraud Detection</h2>
+
+<p>
+While evaluating model performance through false negatives (FN) and false positives (FP) is essential, real-world deployment also demands attention to the hidden operational costs of <strong>manual reviews</strong>. 
+In fraud detection systems, transactions flagged by the model as suspicious are often routed for human review before a final decision is made. 
+This process, although necessary, introduces labor costs that can quickly accumulate at scale.
+</p>
+  
+<p>
+<a href="https://www.mastercard.com/us/en/news-and-trends/Insights/2024/manual-fraud-review-cost.html" target="_blank"><strong>Mastercard (2024)</strong></a> highlights that inefficient manual review processes not only increase operational expenses but also erode customer experience due to delays and friction in legitimate transactions. 
+Automating these workflows is emphasized as a way to improve internal efficiency and reduce fraud losses without adding unnecessary overhead.
+</p>
+
+<p>
+<a href="https://www.ravelin.com/blog/are-you-spending-too-much-time-on-manual-review" target="_blank"><strong>Ravelin (2024)</strong></a> further supports this by stating that manual review is one of the most overlooked yet significant cost components in fraud operations. 
+According to the MRC Global Fraud Survey, each manual review takes on average <strong>5.6 minutes</strong>, and this time cost—when multiplied across thousands of cases—makes manual review 
+<q>the fraud challenge of greatest concern to e-commerce merchants</q>.
+</p>
+
+<p>
+Together, these insights reinforce that beyond misclassification costs (e.g., <code>$500</code> for a false negative, <code>$10</code> for a false positive), 
+<strong>manual review cost is a major factor</strong> in total cost evaluation. 
+Ignoring it can lead to underestimating the true cost of a deployed fraud detection model.
+</p>
+
+<h3>📚 References</h3>
+<ul>
+  <li>
+    <a href="https://www.mastercard.com/us/en/news-and-trends/Insights/2024/manual-fraud-review-cost.html" target="_blank">
+      Mastercard. (2024, May 8). <em>What do inefficient manual fraud reviews really cost you?</em>
+    </a>
+  </li>
+  <li>
+    <a href="https://www.ravelin.com/blog/are-you-spending-too-much-time-on-manual-review" target="_blank">
+      Ravelin. (2024). <em>Are you spending too much time on manual review?</em>
+    </a>
+  </li>
+</ul>
 
 
 
