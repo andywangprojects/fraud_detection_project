@@ -462,27 +462,45 @@ Similarly, <a href="https://pages.cs.wisc.edu/~shavlik/cs760/papers/elkan.pdf" t
   
   <p><strong>Note:</strong> <h3>💰 Cost-Based Threshold Optimization (Logistic Regression)</h3>
 <p>
-Using a predefined cost matrix that assigns greater penalties to missed frauds (false negatives) than to false alerts (false positives), I calculated the total cost of classification errors across different decision thresholds on the test set. The graph above shows how total cost varies with the probability threshold in the logistic regression model.
+Using a predefined cost matrix that assigns greater penalties to missed frauds (false negatives) than to false alerts (false positives), 
+I calculated the total cost of classification errors across different decision thresholds on the test set. 
+The graph above shows how total cost varies with the probability threshold in the logistic regression model.
 </p>
+
 <p>
-At low thresholds (between 0.0 and 0.2), the model predicts too many transactions as fraud, resulting in a surge of false positives and keeping the total cost above $5 million. As the threshold increases, the cost declines sharply, reaching its minimum at a threshold of <strong>0.27</strong>. This threshold provides the best trade-off between false positives and false negatives, minimizing the overall financial impact of prediction errors.
+At low thresholds (between <strong>0.0</strong> and <strong>0.2</strong>), the model predicts too many transactions as fraud, 
+resulting in a surge of false positives and keeping the total cost above <strong>$5 million</strong>. 
+As the threshold increases, the cost declines sharply, reaching its minimum at a threshold of <strong>0.27</strong>. 
+This threshold provides the best trade-off between false positives and false negatives, 
+minimizing the overall financial impact of prediction errors.
 </p>
+
+<p>
+Beyond <strong>0.27</strong>, the total cost begins to rise again, but more gradually, staying under <strong>$2 million</strong>. 
+The lowest total cost achieved is approximately <strong>$411,400</strong>, suggesting that setting the threshold near <strong>0.27</strong> 
+delivers the most cost-effective fraud detection performance.
 </p>
-Beyond 0.27, the total cost begins to rise again, but more gradually, staying under $2 million. The lowest total cost achieved is approximately <strong>$411,400</strong>, suggesting that setting the threshold near <strong>0.27</strong> delivers the most cost-effective fraud detection performance.
-</p>
+
 
   </div>
   <img src="Cost_analysis_rf.png" width="700" alt="Logistic Regression model cost graph">  
   <p><strong>Note:</strong> <h3>💰 Cost-Based Threshold Optimization (Random Forest)</h3>
 <p>
-Using a cost-sensitive evaluation approach, I calculated the total financial cost of misclassification across various decision thresholds in the random forest model. The cost function heavily penalizes false negatives (missed fraud) over false positives (false alarms), reflecting real-world priorities in fraud detection.
+Using a cost-sensitive evaluation approach, I calculated the total financial cost of misclassification across various decision thresholds in the random forest model. 
+The cost function heavily penalizes false negatives (missed fraud) over false positives (false alarms), reflecting real-world priorities in fraud detection.
 </p>
+
 <p>
-As shown in the graph above, total cost is extremely high at thresholds near 0.0 due to an overwhelming number of false positives. As the threshold increases, the cost drops significantly and stabilizes between 0.2 and 0.7. The lowest total cost is observed at a threshold of <strong>0.46</strong>, where the model achieves the optimal trade-off between fraud detection and false alerts.
+As shown in the graph above, total cost is extremely high at thresholds near <strong>0.0</strong> due to an overwhelming number of false positives. 
+As the threshold increases, the cost drops significantly and stabilizes between <strong>0.2</strong> and <strong>0.7</strong>. 
+The lowest total cost is observed at a threshold of <strong>0.46</strong>, where the model achieves the optimal trade-off between fraud detection and false alerts.
 </p>
+
 <p>
-At this threshold, the minimum cost is approximately <strong>$186,480</strong>, representing the most cost-effective configuration for the random forest model on the test set. Beyond this point, the cost begins to rise again gradually, indicating a decline in fraud detection effectiveness.
+At this threshold, the minimum cost is approximately <strong>$186,480</strong>, representing the most cost-effective configuration for the random forest model on the test set. 
+Beyond this point, the cost begins to rise again gradually, indicating a decline in fraud detection effectiveness.
 </p>
+
 
 <h2>✅ Evaluating the Hidden Cost of Manual Review in Fraud Detection</h2>
 
